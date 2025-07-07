@@ -1,0 +1,178 @@
+app:
+  description: "\n\n```xml\n<instruction>\n请根据以下步骤完成任务：\n1. 先从知识库中检索相关信息进行验证，搜索与{{research_topic}}相关的最新论文，优先选择近3年内发表的顶会或期刊论文，确保标注作者信息和发表的具体年份(现在是2025年)。\n\
+    2. 查找这些论文对应的GitHub代码仓库（如果有的话），并验证链接有效性(论文URL链接特别关注)。\n3. 用简洁的3-5句话概括每篇论文的核心内容，包括：研究问题、方法框架、创新点。\n\
+    4. 输出格式要求：\n   - 论文标题（作者，年份）\n   - 论文链接（完整URL）\n   - 代码链接（若无可省略，标注\"无公开代码\"）\n\
+    \   - 工作简述（避免专业缩写，需注明全称）\n5. 确保输出为纯文本，不含任何XML标签。\n\n若未找到符合要求的资源，请直接返回\"未找到近3年{{research_topic}}领域的顶会/期刊论文\"\
+    。\n</instruction>\n\n<input>\nresearch_topic: {{research_topic}}\n</input>\n\n\
+    <example>\nresearch_topic: 图神经网络\n\n输出示例：\n1. \"Graph Attention Networks\" (Petar\
+    \ Veličković et al., 2018)\n论文链接: https://arxiv.org/abs/1710.10903\n代码链接: https://github.com/PetarV-/GAT\n\
+    主要工作：提出图注意力网络(GAT)，通过多头注意力机制聚合邻居节点信息；解决了图卷积网络(GCN)中静态权重分配的局限性；在节点分类任务中达到SOTA(State-of-the-art)性能。\n\
+    </example>\n\n<output>\n输出格式：纯文本，每篇论文占一行，格式如下：\n- 论文标题（作者，年份）\n- 论文链接（完整URL）\n\
+    - 代码链接（若无可省略，标注\"无公开代码\"）\n- 工作简述（避免专业缩写，需注明全称）\n</output>\n```"
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: agent-chat
+  name: 文献查找
+  use_icon_as_answer_icon: true
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/siliconflow:0.0.15@775950e2071600bd3ba0415ec306c1b1582bc4a2a94688d642f627d112d87cd3
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/arxiv:0.0.2@906eec47ee2ae429a628ad0300173ad962d24930883814e36c1b0c2fc09bdfdf
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/google:0.0.9@d360bbc433f39be1b11909cb9c32e6be4a17ea06af083f9e1c7613bb802bf517
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/github:0.0.5@77596000126e29db4b9bdba4e22fb965675db47786892e9372a636a9cb06b192
+kind: app
+model_config:
+  agent_mode:
+    enabled: true
+    max_iteration: 10
+    prompt: null
+    strategy: function_call
+    tools:
+    - enabled: true
+      isDeleted: false
+      notAuthor: false
+      provider_id: langgenius/arxiv/arxiv
+      provider_name: langgenius/arxiv/arxiv
+      provider_type: builtin
+      tool_label: Arxiv 搜索
+      tool_name: arxiv_search
+      tool_parameters:
+        query: ''
+    - enabled: true
+      isDeleted: false
+      notAuthor: false
+      provider_id: langgenius/google/google
+      provider_name: langgenius/google/google
+      provider_type: builtin
+      tool_label: 谷歌搜索
+      tool_name: google_search
+      tool_parameters:
+        gl: ''
+        hl: ''
+        location: ''
+        query: ''
+    - enabled: true
+      isDeleted: false
+      notAuthor: false
+      provider_id: langgenius/github/github
+      provider_name: langgenius/github/github
+      provider_type: builtin
+      tool_label: 仓库搜索
+      tool_name: github_repositories
+      tool_parameters:
+        query: ''
+        top_n: ''
+  annotation_reply:
+    enabled: false
+  chat_prompt_config: {}
+  completion_prompt_config: {}
+  dataset_configs:
+    datasets:
+      datasets:
+      - dataset:
+          enabled: true
+          id: 6bfdb441-79ff-4510-aee1-3f95378bb939
+    metadata_filtering_mode: automatic
+    metadata_model_config:
+      completion_params:
+        max_tokens: 16384
+        temperature: 0.7
+        top_p: 0.95
+      mode: chat
+      name: Pro/deepseek-ai/DeepSeek-R1
+      provider: langgenius/siliconflow/siliconflow
+    reranking_enable: false
+    reranking_mode: reranking_model
+    reranking_model:
+      reranking_model_name: netease-youdao/bce-reranker-base_v1
+      reranking_provider_name: langgenius/siliconflow/siliconflow
+    retrieval_model: multiple
+    top_k: 4
+  dataset_query_variable: ''
+  external_data_tools: []
+  file_upload:
+    allowed_file_extensions:
+    - .JPG
+    - .JPEG
+    - .PNG
+    - .GIF
+    - .WEBP
+    - .SVG
+    - .MP4
+    - .MOV
+    - .MPEG
+    - .WEBM
+    allowed_file_types: []
+    allowed_file_upload_methods:
+    - remote_url
+    - local_file
+    enabled: false
+    image:
+      detail: high
+      enabled: false
+      number_limits: 3
+      transfer_methods:
+      - remote_url
+      - local_file
+    number_limits: 3
+  model:
+    completion_params:
+      enable_thinking: true
+      max_tokens: 8192
+      stop: []
+      temperature: 0.6
+      thinking_budget: 512
+      top_p: 0.95
+    mode: chat
+    name: Qwen/Qwen3-235B-A22B
+    provider: langgenius/siliconflow/siliconflow
+  more_like_this:
+    enabled: false
+  opening_statement: '
+
+
+    欢迎！我是您的学术助手，专注于帮助您快速获取最新研究成果。无论是论文检索、代码验证还是研究内容解析，我都会以清晰简洁的方式为您提供所需信息。请告诉我您感兴趣的研究领域，让我们开始探索吧！'
+  pre_prompt: "\n\n```xml\n<instruction>\n请根据以下步骤完成任务：\n1. 先从知识库中检索相关信息进行验证，搜索与{{research_topic}}相关的最新论文，优先选择近3年内发表的顶会或期刊论文，确保标注作者信息和发表的具体年份(现在是2025年)。\n\
+    2. 查找这些论文对应的GitHub代码仓库（如果有的话），并验证链接有效性(论文URL链接特别关注)。\n3. 用简洁的3-5句话概括每篇论文的核心内容，包括：研究问题、方法框架、创新点。\n\
+    4. 输出格式要求：\n   - 论文标题（作者，年份）\n   - 论文链接（完整URL）\n   - 代码链接（若无可省略，标注\"无公开代码\"）\n\
+    \   - 工作简述（避免专业缩写，需注明全称）\n5. 确保输出为纯文本，不含任何XML标签。\n\n若未找到符合要求的资源，请直接返回\"未找到近3年{{research_topic}}领域的顶会/期刊论文\"\
+    。\n</instruction>\n\n<input>\nresearch_topic: {{research_topic}}\n</input>\n\n\
+    <example>\nresearch_topic: 图神经网络\n\n输出示例：\n1. \"Graph Attention Networks\" (Petar\
+    \ Veličković et al., 2018)\n论文链接: https://arxiv.org/abs/1710.10903\n代码链接: https://github.com/PetarV-/GAT\n\
+    主要工作：提出图注意力网络(GAT)，通过多头注意力机制聚合邻居节点信息；解决了图卷积网络(GCN)中静态权重分配的局限性；在节点分类任务中达到SOTA(State-of-the-art)性能。\n\
+    </example>\n\n<output>\n输出格式：纯文本，每篇论文占一行，格式如下：\n- 论文标题（作者，年份）\n- 论文链接（完整URL）\n\
+    - 代码链接（若无可省略，标注\"无公开代码\"）\n- 工作简述（避免专业缩写，需注明全称）\n</output>\n```"
+  prompt_type: simple
+  retriever_resource:
+    enabled: true
+  sensitive_word_avoidance:
+    configs: []
+    enabled: false
+    type: ''
+  speech_to_text:
+    enabled: false
+  suggested_questions: []
+  suggested_questions_after_answer:
+    enabled: false
+  text_to_speech:
+    enabled: false
+    language: ''
+    voice: ''
+  user_input_form:
+  - text-input:
+      default: ''
+      label: research_topic
+      required: true
+      variable: research_topic
+version: 0.3.0
